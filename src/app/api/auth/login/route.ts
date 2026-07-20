@@ -4,14 +4,24 @@ import { verifyPassword, createSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const { email: emailInput, password } = await request.json();
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    if (!emailInput || !password) {
+      return NextResponse.json({ error: "Username/Email and password are required" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
+    // Support entering "root" or "root@mobawi.com"
+    const targetEmail = emailInput.trim().includes("@")
+      ? emailInput.trim()
+      : `${emailInput.trim()}@mobawi.com`;
+
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: targetEmail },
+          { email: emailInput.trim() },
+        ],
+      },
     });
 
     if (!user) {

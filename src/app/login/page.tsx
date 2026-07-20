@@ -65,13 +65,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-black">Email</label>
+            <label className="text-sm font-medium text-black">Username</label>
             <Input
-              type="email"
+              type="text"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@mobawi.com"
+              placeholder="root"
             />
           </div>
           <div className="space-y-2">
