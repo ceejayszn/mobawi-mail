@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(VIEWER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  logs         Log[]
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  DEVELOPER
+  SUPPORT
+  VIEWER
+}
+
+model Template {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  subject   String
+  html      String?
+  reactCode String?
+  variables Json?
+  status    TemplateStatus @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  queues    Queue[]
+  histories History[]
+}
+
+enum TemplateStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model Queue {
+  id          String   @id @default(uuid())
+  recipient   String
+  subject     String
+  templateId  String?
+  template    Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  payload     Json?
+  priority    Int      @default(0) // Higher number = higher priority
+  status      QueueStatus @default(PENDING)
+  attempts    Int      @default(0)
+  error       String?
+  scheduledAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  sentAt      DateTime?
+}
+
+enum QueueStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  CANCELLED
+  RETRY
+}
+
+model History {
+  id         String   @id @default(uuid())
+  recipient  String
+  subject    String
+  templateId String?
+  template   Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  payload    Json?
+  response   Json?
+  createdAt  DateTime @default(now())
+}
+
+model Recipient {
+  id         String   @id @default(uuid())
+  name       String?
+  email      String   @unique
+  company    String?
+  tags       String[]
+  status     RecipientStatus @default(SUBSCRIBED)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum RecipientStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+  BLOCKED
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  name        String   // e.g., "License Portal"
+  key         String   @unique
+  permissions Json?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  logs        Log[]
+}
+
+model Log {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  apiKeyId   String?
+  apiKey     ApiKey?  @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
