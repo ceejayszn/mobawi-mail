@@ -25,9 +25,9 @@ export async function sendEmail(options: SendEmailOptions) {
     } catch (_) {}
   }
 
-  // Active production fallback key
-  if (!apiKey) {
-    apiKey = "re_JXnLYbDD_HfBGhnCHhQfdRj8R5v3Xr3sp";
+  // Live validated key fallback
+  if (!apiKey || !apiKey.startsWith("re_")) {
+    apiKey = "re_aHghE1HB_71AnmcWvgtXCfudJHMjqXwB9";
   }
 
   const resend = new Resend(apiKey);
