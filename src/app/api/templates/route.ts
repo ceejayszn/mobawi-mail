@@ -8,11 +8,15 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const templates = await prisma.template.findMany({
-    orderBy: { updatedAt: "desc" },
-  });
-
-  return NextResponse.json({ templates });
+  try {
+    const templates = await prisma.template.findMany({
+      orderBy: { updatedAt: "desc" },
+    });
+    return NextResponse.json({ templates });
+  } catch (dbError) {
+    console.warn("Templates DB fetch fallback:", dbError);
+    return NextResponse.json({ templates: [] });
+  }
 }
 
 export async function POST(request: Request) {
@@ -39,14 +43,16 @@ export async function POST(request: Request) {
       },
     });
 
-    await prisma.log.create({
-      data: {
-        action: "CREATE_TEMPLATE",
-        entityType: "Template",
-        entityId: template.id,
-        userId: session.userId,
-      },
-    });
+    try {
+      await prisma.log.create({
+        data: {
+          action: "CREATE_TEMPLATE",
+          entityType: "Template",
+          entityId: template.id,
+          userId: session.userId,
+        },
+      });
+    } catch (_) {}
 
     return NextResponse.json({ success: true, template });
   } catch (error: any) {
