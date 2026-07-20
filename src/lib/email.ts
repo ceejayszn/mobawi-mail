@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy_build_key");
-
 export interface SendEmailOptions {
   to: string | string[];
   subject: string;
@@ -13,7 +11,10 @@ export interface SendEmailOptions {
 }
 
 export async function sendEmail(options: SendEmailOptions) {
-  const from = options.from || `${process.env.DEFAULT_FROM_NAME} <${process.env.DEFAULT_FROM_EMAIL}>`;
+  const apiKey = process.env.RESEND_API_KEY || "re_dummy_key_for_sending";
+  const resend = new Resend(apiKey);
+
+  const from = options.from || `${process.env.DEFAULT_FROM_NAME || "Mobawi Mail"} <${process.env.DEFAULT_FROM_EMAIL || "onboarding@resend.dev"}>`;
 
   const payload: any = {
     from,
