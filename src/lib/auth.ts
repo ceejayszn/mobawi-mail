@@ -1,5 +1,5 @@
 import * as jwt from "jsonwebtoken";
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET || "development-secret-key";
