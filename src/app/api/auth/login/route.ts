@@ -7,22 +7,30 @@ export async function POST(request: Request) {
     const { email: emailInput, password } = await request.json();
 
     if (!emailInput || !password) {
-      return NextResponse.json({ error: "Username/Email and password are required" }, { status: 400 });
+      return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
     }
 
-    // Support entering "root" or "root@mobawi.com"
     const targetEmail = emailInput.trim().includes("@")
       ? emailInput.trim()
       : `${emailInput.trim()}@mobawi.com`;
 
-    let user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: targetEmail },
-          { email: emailInput.trim() },
-        ],
-      },
-    });
+    let user = null;
+    try {
+      user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: targetEmail },
+            { email: emailInput.trim() },
+          ],
+        },
+      });
+    } catch (dbError: any) {
+      console.error("Database connection error during login:", dbError);
+      return NextResponse.json(
+        { error: "Database not connected. Please check DATABASE_URL in Vercel settings and run seed.js." },
+        { status: 500 }
+      );
+    }
 
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
@@ -41,8 +49,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, user: { id: user.id, email: user.email, role: user.role } });
-  } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Login route error:", error);
+    return NextResponse.json({ error: "Authentication failed. Please try again." }, { status: 500 });
   }
 }

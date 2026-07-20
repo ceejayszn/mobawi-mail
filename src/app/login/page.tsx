@@ -71,7 +71,8 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="root"
+              placeholder=""
+              autoComplete="username"
               className="bg-zinc-900/50 border-zinc-800 text-foreground placeholder:text-zinc-600 focus-visible:ring-primary"
             />
           </div>
@@ -82,7 +83,8 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder=""
+              autoComplete="current-password"
               className="bg-zinc-900/50 border-zinc-800 text-foreground placeholder:text-zinc-600 focus-visible:ring-primary"
             />
           </div>
