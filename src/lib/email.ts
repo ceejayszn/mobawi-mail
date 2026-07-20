@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { prisma } from "@/lib/prisma";
 
 export interface SendEmailOptions {
   to: string | string[];
@@ -11,9 +12,25 @@ export interface SendEmailOptions {
 }
 
 export async function sendEmail(options: SendEmailOptions) {
-  const apiKey = process.env.RESEND_API_KEY || "re_dummy_key_for_sending";
-  const resend = new Resend(apiKey);
+  let apiKey = process.env.RESEND_API_KEY;
 
+  if (!apiKey || apiKey === "re_dummy_key_for_sending") {
+    try {
+      const setting = await prisma.setting.findUnique({
+        where: { key: "RESEND_API_KEY" },
+      });
+      if (setting?.value) {
+        apiKey = setting.value;
+      }
+    } catch (_) {}
+  }
+
+  // Active production fallback key
+  if (!apiKey) {
+    apiKey = "re_JXnLYbDD_HfBGhnCHhQfdRj8R5v3Xr3sp";
+  }
+
+  const resend = new Resend(apiKey);
   const from = options.from || `${process.env.DEFAULT_FROM_NAME || "Mobawi Mail"} <${process.env.DEFAULT_FROM_EMAIL || "onboarding@resend.dev"}>`;
 
   const payload: any = {
@@ -27,7 +44,6 @@ export async function sendEmail(options: SendEmailOptions) {
   if (options.cc) payload.cc = options.cc;
   if (options.bcc) payload.bcc = options.bcc;
 
-  // Fallback text if neither html nor text provided
   if (!payload.html && !payload.text) {
     payload.text = "Notification from Mobawi Mail";
   }
