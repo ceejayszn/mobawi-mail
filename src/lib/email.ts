@@ -12,26 +12,28 @@ export interface SendEmailOptions {
 }
 
 export async function sendEmail(options: SendEmailOptions) {
-  let apiKey = process.env.RESEND_API_KEY;
+  // Always default to your active validated working key: re_aHghE1HB_71AnmcWvgtXCfudJHMjqXwB9
+  let apiKey = "re_aHghE1HB_71AnmcWvgtXCfudJHMjqXwB9";
 
-  if (!apiKey || apiKey === "re_dummy_key_for_sending") {
-    try {
-      const setting = await prisma.setting.findUnique({
-        where: { key: "RESEND_API_KEY" },
-      });
-      if (setting?.value) {
-        apiKey = setting.value;
-      }
-    } catch (_) {}
-  }
+  // Check DB custom setting override
+  try {
+    const setting = await prisma.setting.findUnique({
+      where: { key: "RESEND_API_KEY" },
+    });
+    if (setting?.value && setting.value.startsWith("re_") && setting.value.length > 20) {
+      apiKey = setting.value;
+    }
+  } catch (_) {}
 
-  // Live validated key fallback
-  if (!apiKey || !apiKey.startsWith("re_")) {
-    apiKey = "re_aHghE1HB_71AnmcWvgtXCfudJHMjqXwB9";
+  // Check environment variable if custom set
+  if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith("re_aHghE1HB")) {
+    apiKey = process.env.RESEND_API_KEY;
   }
 
   const resend = new Resend(apiKey);
-  const from = options.from || `${process.env.DEFAULT_FROM_NAME || "Mobawi Mail"} <${process.env.DEFAULT_FROM_EMAIL || "onboarding@resend.dev"}>`;
+  
+  // Resend free tier requires onboarding@resend.dev as sender
+  const from = options.from || "Mobawi Mail <onboarding@resend.dev>";
 
   const payload: any = {
     from,
@@ -52,6 +54,7 @@ export async function sendEmail(options: SendEmailOptions) {
     const { data, error } = await resend.emails.send(payload);
 
     if (error) {
+      console.error("Resend API returned error:", error);
       throw new Error(error.message);
     }
 
