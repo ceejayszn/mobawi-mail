@@ -99,16 +99,16 @@ export default function ComposePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Compose Email</h2>
-        <p className="text-sm text-muted-foreground mt-1">Send a single or template-based email with dynamic variables.</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#f0f0f0]">Compose Email</h2>
+        <p className="text-sm text-[#666666] mt-1">Send a single or template-based email with dynamic variables.</p>
       </div>
 
       {statusMsg && (
         <div
           className={`p-4 rounded-[12px] text-sm ${
             statusMsg.type === "success"
-              ? "bg-green-50 text-green-700 border border-green-200"
-              : "bg-red-50 text-red-700 border border-red-200"
+              ? "bg-green-950/50 text-green-400 border border-green-800/60"
+              : "bg-red-950/50 text-red-400 border border-red-800/60"
           }`}
         >
           {statusMsg.text}
@@ -117,15 +117,15 @@ export default function ComposePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <form onSubmit={handleSend} className="space-y-4">
-          <Card>
+          <Card className="bg-[#161616] border-[#222222]">
             <CardHeader>
-              <CardTitle className="text-base font-medium">Email Details</CardTitle>
+              <CardTitle className="text-base font-medium text-[#f0f0f0]">Email Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-black">Template Selector (Optional)</label>
+                <label className="text-xs font-medium text-[#cccccc]">Template Selector (Optional)</label>
                 <select
-                  className="w-full h-10 mt-1 rounded-[12px] border border-input bg-background px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="w-full h-10 mt-1 rounded-[12px] border border-[#2a2a2a] bg-[#1a1a1a] text-[#f0f0f0] px-3 text-sm"
                   value={templateId}
                   onChange={(e) => handleTemplateSelect(e.target.value)}
                 >
@@ -139,51 +139,51 @@ export default function ComposePage() {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-black">To (Recipient Email)</label>
+                <label className="text-xs font-medium text-[#cccccc]">To (Recipient Email)</label>
                 <Input
                   type="email"
                   required
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
                   placeholder="user@mobawi.com"
-                  className="mt-1"
+                  className="mt-1 bg-[#1a1a1a] border-[#2a2a2a] text-[#f0f0f0] placeholder:text-[#444444]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-black">Subject Line</label>
+                <label className="text-xs font-medium text-[#cccccc]">Subject Line</label>
                 <Input
                   type="text"
                   required
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Welcome to Mobawi Mail {{name}}"
-                  className="mt-1"
+                  className="mt-1 bg-[#1a1a1a] border-[#2a2a2a] text-[#f0f0f0] placeholder:text-[#444444]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-black">HTML Content</label>
+                <label className="text-xs font-medium text-[#cccccc]">HTML Content</label>
                 <textarea
                   rows={6}
                   value={html}
                   onChange={(e) => setHtml(e.target.value)}
                   placeholder="<h1>Hello {{name}}</h1><p>Your key is {{license_key}}</p>"
-                  className="w-full mt-1 p-3 text-sm font-mono border border-input rounded-[12px] bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="w-full mt-1 p-3 text-sm font-mono border border-[#2a2a2a] rounded-[12px] bg-[#1a1a1a] text-[#f0f0f0] placeholder:text-[#444444]"
                 ></textarea>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-black">Payload Variables (JSON)</label>
+                <label className="text-xs font-medium text-[#cccccc]">Payload Variables (JSON)</label>
                 <textarea
                   rows={4}
                   value={payloadJson}
                   onChange={(e) => setPayloadJson(e.target.value)}
-                  className="w-full mt-1 p-3 text-sm font-mono border border-input rounded-[12px] bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="w-full mt-1 p-3 text-sm font-mono border border-[#2a2a2a] rounded-[12px] bg-[#1a1a1a] text-[#f0f0f0]"
                 ></textarea>
               </div>
 
-              <Button type="submit" className="w-full h-11" disabled={loading}>
+              <Button type="submit" className="w-full h-11 bg-[#f0f0f0] hover:bg-white text-[#111111] font-semibold" disabled={loading}>
                 <Send className="w-4 h-4 mr-2" />
                 {loading ? "Sending Email..." : "Send Now"}
               </Button>
@@ -192,23 +192,23 @@ export default function ComposePage() {
         </form>
 
         {/* Live Preview */}
-        <Card className="flex flex-col">
+        <Card className="flex flex-col bg-[#161616] border-[#222222]">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base font-medium flex items-center">
-              <Eye className="w-4 h-4 mr-2 text-primary" /> Live Render Preview
+            <CardTitle className="text-base font-medium text-[#f0f0f0] flex items-center">
+              <Eye className="w-4 h-4 mr-2 text-[#888888]" /> Live Render Preview
             </CardTitle>
-            <Button variant="ghost" size="sm" onClick={updatePreview}>
+            <Button variant="ghost" size="sm" onClick={updatePreview} className="text-[#888888] hover:text-[#f0f0f0]">
               <RefreshCw className="w-3.5 h-3.5 mr-1" /> Refresh
             </Button>
           </CardHeader>
-          <CardContent className="flex-1 bg-gray-50/50 p-4 rounded-[12px] border m-6 border-gray-200 min-h-[350px]">
+          <CardContent className="flex-1 bg-[#1a1a1a] p-4 rounded-[12px] border m-6 border-[#2a2a2a] min-h-[350px]">
             {previewHtml ? (
               <div
                 className="bg-white p-6 rounded-[8px] border shadow-sm prose prose-sm max-w-none min-h-[300px]"
                 dangerouslySetInnerHTML={{ __html: previewHtml }}
               ></div>
             ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+              <div className="flex items-center justify-center h-full text-[#555555] text-sm">
                 Enter HTML content to render live preview...
               </div>
             )}
