@@ -4,6 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Mobawi Mail",
   description: "Internal email delivery and template management platform.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased text-foreground bg-background">{children}</body>
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+      </head>
+      <body className="font-sans antialiased text-black bg-white">{children}</body>
     </html>
   );
 }

@@ -30,77 +30,77 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-white">Overview</h2>
-        <p className="text-sm text-zinc-400 mt-1">Real-time email delivery statistics.</p>
+        <h2 className="text-2xl font-bold tracking-tight text-black">Overview</h2>
+        <p className="text-sm text-gray-500 mt-1">Real-time email delivery statistics.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-zinc-900/60 border-zinc-800">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-300">Emails Sent</CardTitle>
-            <CheckCircle className="h-4 w-4 text-primary" />
+            <CardTitle className="text-sm font-medium text-gray-600">Emails Sent</CardTitle>
+            <CheckCircle className="h-4 w-4 text-black" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalSent}</div>
-            <p className="text-xs text-zinc-500">Lifetime successful deliveries</p>
+            <div className="text-2xl font-bold text-black">{totalSent}</div>
+            <p className="text-xs text-gray-500">Lifetime successful deliveries</p>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/60 border-zinc-800">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-300">Pending Queue</CardTitle>
-            <Clock className="h-4 w-4 text-zinc-500" />
+            <CardTitle className="text-sm font-medium text-gray-600">Pending Queue</CardTitle>
+            <Clock className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalPending}</div>
-            <p className="text-xs text-zinc-500">Waiting to be processed</p>
+            <div className="text-2xl font-bold text-black">{totalPending}</div>
+            <p className="text-xs text-gray-500">Waiting to be processed</p>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/60 border-zinc-800">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-300">Failed Deliveries</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Failed Deliveries</CardTitle>
             <XCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalFailed}</div>
-            <p className="text-xs text-zinc-500">Emails that could not be sent</p>
+            <div className="text-2xl font-bold text-black">{totalFailed}</div>
+            <p className="text-xs text-gray-500">Emails that could not be sent</p>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900/60 border-zinc-800">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-zinc-300">Delivery Rate</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium text-gray-600">Delivery Rate</CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-black">
               {totalSent + totalFailed === 0 ? "100%" : `${Math.round((totalSent / (totalSent + totalFailed)) * 100)}%`}
             </div>
-            <p className="text-xs text-zinc-500">Success percentage</p>
+            <p className="text-xs text-gray-500">Success percentage</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="lg:col-span-4 bg-zinc-900/60 border-zinc-800">
+        <Card className="lg:col-span-4 bg-white border-gray-200">
           <CardHeader>
-            <CardTitle className="text-white">Recent Activity</CardTitle>
+            <CardTitle className="text-black">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {recentHistory.length === 0 ? (
-                <p className="text-sm text-zinc-500">No recent email activity recorded.</p>
+                <p className="text-sm text-gray-500">No recent email activity recorded.</p>
               ) : (
                 recentHistory.map((history) => (
                   <div key={history.id} className="flex items-center">
-                    <div className="w-9 h-9 rounded-[8px] bg-primary/20 flex items-center justify-center mr-4">
-                      <CheckCircle className="h-4 w-4 text-primary" />
+                    <div className="w-9 h-9 rounded-[8px] bg-gray-100 flex items-center justify-center mr-4">
+                      <CheckCircle className="h-4 w-4 text-black" />
                     </div>
                     <div className="space-y-1 flex-1">
-                      <p className="text-sm font-medium text-white leading-none">{history.subject}</p>
-                      <p className="text-sm text-zinc-400">
+                      <p className="text-sm font-medium text-black leading-none">{history.subject}</p>
+                      <p className="text-sm text-gray-500">
                         Sent to {history.recipient}
                       </p>
                     </div>
-                    <div className="ml-auto font-medium text-sm text-zinc-500">
+                    <div className="ml-auto font-medium text-sm text-gray-400">
                       {new Date(history.createdAt).toLocaleTimeString()}
                     </div>
                   </div>
@@ -109,31 +109,31 @@ export default async function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="lg:col-span-3 bg-zinc-900/60 border-zinc-800">
+        <Card className="lg:col-span-3 bg-white border-gray-200">
           <CardHeader>
-            <CardTitle className="text-white">System Status</CardTitle>
+            <CardTitle className="text-black">System Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-zinc-400">Resend API</span>
+                <span className="text-sm text-gray-500">Resend API</span>
                 <div className="flex items-center">
                   <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  <span className="text-sm font-medium text-white">Operational</span>
+                  <span className="text-sm font-medium text-black">Operational</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-zinc-400">Mail Dispatcher</span>
+                <span className="text-sm text-gray-500">Mail Dispatcher</span>
                 <div className="flex items-center">
                   <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  <span className="text-sm font-medium text-white">Operational</span>
+                  <span className="text-sm font-medium text-black">Operational</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-zinc-400">Queue Worker</span>
+                <span className="text-sm text-gray-500">Queue Worker</span>
                 <div className="flex items-center">
                   <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  <span className="text-sm font-medium text-white">Active</span>
+                  <span className="text-sm font-medium text-black">Active</span>
                 </div>
               </div>
             </div>
