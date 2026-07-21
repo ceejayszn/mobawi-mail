@@ -12,8 +12,10 @@ export interface SendEmailOptions {
 }
 
 export async function sendEmail(options: SendEmailOptions) {
-  let apiKey = process.env.RESEND_API_KEY || "re_aHghE1HB_71AnmcWvgtXCfudJHMjqXwB9";
+  // Read key from environment variable only - never hardcode secrets in source
+  let apiKey = process.env.RESEND_API_KEY || "";
 
+  // Allow DB override (e.g. set from Settings page)
   try {
     const setting = await prisma.setting.findUnique({
       where: { key: "RESEND_API_KEY" },
@@ -22,6 +24,10 @@ export async function sendEmail(options: SendEmailOptions) {
       apiKey = setting.value;
     }
   } catch (_) {}
+
+  if (!apiKey || !apiKey.startsWith("re_")) {
+    throw new Error("No valid Resend API key configured. Set RESEND_API_KEY in Vercel environment variables.");
+  }
 
   const from = options.from || "Mobawi Mail <onboarding@resend.dev>";
   const payload: any = {
@@ -39,27 +45,13 @@ export async function sendEmail(options: SendEmailOptions) {
     payload.text = "Notification from Mobawi Mail";
   }
 
-  // Attempt live delivery via Resend SDK
-  try {
-    const resend = new Resend(apiKey);
-    const { data, error } = await resend.emails.send(payload);
+  const resend = new Resend(apiKey);
+  const { data, error } = await resend.emails.send(payload);
 
-    if (data && data.id) {
-      return { id: data.id, mode: "live" };
-    }
-
-    if (error) {
-      console.warn("Resend API key error, falling back to instant internal dispatch:", error.message);
-    }
-  } catch (err: any) {
-    console.warn("Resend client exception, falling back to internal dispatch:", err.message);
+  if (error) {
+    console.error("Resend API error:", error);
+    throw new Error(error.message);
   }
 
-  // Fallback: Dispatch internally & log to Queue/History cleanly
-  const simulatedId = `msg_mobawi_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-  return {
-    id: simulatedId,
-    mode: "simulated",
-    message: "Email queued and logged in Mobawi Mail dispatch system.",
-  };
+  return data;
 }
