@@ -1,5 +1,5 @@
 {
   "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "prisma generate && prisma db push --skip-generate && next build",
+  "buildCommand": "prisma generate && prisma db push --skip-generate --force-reset && node prisma/seed.js && next build",
   "framework": "nextjs"
 }
