@@ -70,7 +70,7 @@ export default function ComposePage() {
 
     try {
       // Note: For internal dashboard sends, we can call the endpoint
-      const res = await fetch("/api/email/send", {
+      const res = await fetch("/api/dashboard/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
