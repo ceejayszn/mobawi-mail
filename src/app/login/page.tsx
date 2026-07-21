@@ -56,7 +56,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-[#cccccc]">Username</label>
             <Input
-              type="text"
+              type="password"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
